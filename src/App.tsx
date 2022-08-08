@@ -7,24 +7,34 @@ import StatusMessage from "./components/StatusMessage";
 import { clearOrdersState } from "./components/OrderBook/orderbookSlice";
 import { useAppDispatch } from "./hooks";
 
+// export const ProductIds = {
+//   XBTUSD: 'PI_XBTUSD',
+//   ETHUSD: 'PI_ETHUSD'
+// };
+
 export const ProductIds = {
-  XBTUSD: 'PI_XBTUSD',
-  ETHUSD: 'PI_ETHUSD'
-};
+  ETHUSD: 'ETH-USD',
+  BTCUSD: 'BTC-USD'
+}
 
 const options: any = {
-  PI_XBTUSD: [0.5, 1, 2.5],
-  PI_ETHUSD: [0.05, 0.1, 0.25]
+  "ETH-USD": [0.5, 1, 2.5],
+  "BTC-USD": [0.05, 0.1, 0.25]
 };
 
+// export const ProductsMap: any = {
+//   "PI_XBTUSD": "PI_ETHUSD",
+//   "PI_ETHUSD": "PI_XBTUSD",
+// }
+
 export const ProductsMap: any = {
-  "PI_XBTUSD": "PI_ETHUSD",
-  "PI_ETHUSD": "PI_XBTUSD",
+  "ETH-USD": "BTC-USD",
+  "BTC-USD": "ETH-USD"
 }
 
 function App() {
   const [windowWidth, setWindowWidth] = useState(0);
-  const [productId, setProductId] = useState(ProductIds.XBTUSD);
+  const [productId, setProductId] = useState(ProductIds.ETHUSD);
   const [isFeedKilled, setIsFeedKilled] = useState(false);
   const [isPageVisible, setIsPageVisible] = useState(true);
   const dispatch = useAppDispatch();

@@ -12,16 +12,12 @@ export interface OrderbookState {
   asks: number[][];
   maxTotalAsks: number;
   groupingSize: number;
-  buys: number[][];
-  sells: number[][];
 }
 
 const initialState: OrderbookState = {
   market: 'PI_XBTUSD', // PI_ETHUSD
   rawBids: [],
   bids: [],
-  buys: [],
-  sells: [],
   maxTotalBids: 0,
   rawAsks: [],
   asks: [],
@@ -59,7 +55,6 @@ const addPriceLevel = (deltaLevel: number[], levels: number[][]): number[][] => 
  */
 const applyDeltas = (currentLevels: number[][], orders: number[][]): number[][] => {
   let updatedLevels: number[][] = currentLevels;
-
   orders.forEach((deltaLevel) => {
     const deltaLevelPrice = deltaLevel[0];
     const deltaLevelSize = deltaLevel[1];
@@ -85,6 +80,8 @@ const applyDeltas = (currentLevels: number[][], orders: number[][]): number[][] 
 
 const addTotalSums = (orders: number[][]): number[][] => {
   const totalSums: number[] = [];
+
+  console.log(orders);
 
   return orders.map((order: number[], idx) => {
     const size: number = order[1];
@@ -123,17 +120,10 @@ export const orderbookSlice = createSlice({
   name: 'orderbook',
   initialState,
   reducers: {
-    addSells: (state, { payload}) => {
-      console.log(payload, "sells");
-      state.sells = payload;
-    },
-    addBuys: (state, { payload}) => {
-      console.log(payload, "buys");
-      state.buys = payload;
-    },
     addBids: (state, { payload }) => {
       const currentTicketSize: number = current(state).groupingSize;
-      const groupedCurrentBids: number[][] = groupByTicketSize(payload, currentTicketSize);
+      // const groupedCurrentBids: number[][] = groupByTicketSize(payload, currentTicketSize);
+      const groupedCurrentBids: number[][] = payload;
       const updatedBids: number[][] = addTotalSums(
         applyDeltas(
           groupByTicketSize(current(state).rawBids, currentTicketSize),
@@ -146,7 +136,8 @@ export const orderbookSlice = createSlice({
     },
     addAsks: (state, { payload }) => {
       const currentTicketSize: number = current(state).groupingSize;
-      const groupedCurrentAsks: number[][] = groupByTicketSize(payload, currentTicketSize);
+      // const groupedCurrentAsks: number[][] = groupByTicketSize(payload, currentTicketSize);
+      const groupedCurrentAsks: number[][] = payload;
       const updatedAsks: number[][] = addTotalSums(
         applyDeltas(
           groupByTicketSize(current(state).rawAsks, currentTicketSize),
@@ -185,12 +176,10 @@ export const orderbookSlice = createSlice({
   }
 });
 
-export const { addSells, addBuys, addBids, addAsks, addExistingState, setGrouping, clearOrdersState } = orderbookSlice.actions;
+export const { addBids, addAsks, addExistingState, setGrouping, clearOrdersState } = orderbookSlice.actions;
 
 export const selectBids = (state: RootState): number[][] => state.orderbook.bids;
 export const selectAsks = (state: RootState): number[][] => state.orderbook.asks;
-export const selectBuys = (state: RootState): number[][] => state.orderbook.buys;
-export const selectSells = (state: RootState): number[][] => state.orderbook.sells;
 export const selectGrouping = (state: RootState): number => state.orderbook.groupingSize;
 export const selectMarket = (state: RootState): string => state.orderbook.market;
 
